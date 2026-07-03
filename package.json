@@ -1,0 +1,17 @@
+{
+  "name": "sapphire",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Scramjet plugin that emulates the chrome.* extension APIs inside proxied frames",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  },
+  "peerDependencies": {
+    "@mercuryworkshop/scramjet-controller": "^0.0.13"
+  }
+}
