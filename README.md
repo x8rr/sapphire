@@ -1,4 +1,6 @@
-# sapphire
+<h1 align="center">
+  <img src="sapphire.png" width=500>
+</h1>
 
 A Scramjet plugin that emulates the `chrome.*` extension APIs inside proxied frames, so
 Chrome extensions (Vencord-style userscripts, ad blockers, etc.) can run against sites
