@@ -10,7 +10,8 @@
     "url": "https://github.com/x8rr/sapphire"
   },
   "files": [
-    "src"
+    "src",
+    "sapphire.png"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
