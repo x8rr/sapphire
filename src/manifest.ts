@@ -32,7 +32,7 @@ export function matchPattern(pattern: string, url: string): boolean {
       .replace(/[.+^${}()|[\]\\]/g, "\\$&")
       .replace(/\*/g, ".*")
       .replace(/\?/g, ".");
-    const schemeMatch = escaped.match(/^([^:]+):\/\
+    const schemeMatch = escaped.match(/^([^:]+):\/\//);
     if (!schemeMatch) return false;
     const re = new RegExp("^" + escaped + "$");
     return re.test(url);

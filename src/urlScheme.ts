@@ -17,10 +17,10 @@ export function chromeExtensionUrl(extId: string, path: string): string {
 }
 
 export function resolveExtensionResourcePath(pageDir: string, ref: string): string {
-  if (ref.startsWith("/")) return ref.replace(/^\
+  if (ref.startsWith("/")) return ref.replace(/^\//, "");
   const fakeBase = `sapphire://x/${pageDir ? `${pageDir}/` : ""}`;
   const resolved = new URL(ref, fakeBase);
-  return decodeURIComponent(resolved.pathname.replace(/^\
+  return decodeURIComponent(resolved.pathname.replace(/^\//, ""));
 }
 
 export function extensionPathDir(path: string): string {
@@ -44,7 +44,7 @@ export function decodeSapphireUrl(input: string): { extId: string; path: string 
     const url = new URL(input, globalThis.location.href);
     if (url.protocol === "chrome-extension:") {
       const extId = url.hostname;
-      const path = decodeURIComponent(url.pathname.replace(/^\
+      const path = decodeURIComponent(url.pathname.replace(/^\//, ""));
       if (!extId || !path) return null;
       return { extId, path };
     }

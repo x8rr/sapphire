@@ -58,7 +58,7 @@ export async function route(event: FetchEvent): Promise<Response> {
 
   const extId = event.clientId ? clientToExtId.get(event.clientId) : undefined;
   if (extId) {
-    const response = await serveExtensionFile(extId, url.pathname.replace(/^\
+    const response = await serveExtensionFile(extId, url.pathname.replace(/^\//, ""));
     if (response) return response;
   }
   return fetch(event.request);

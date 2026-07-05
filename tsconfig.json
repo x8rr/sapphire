@@ -25,5 +25,6 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/router/SapphireRouter.ts", "src/router/swEntry.ts"]
 }
