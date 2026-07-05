@@ -45,3 +45,4 @@ pnpm-lock.yaml
 /krypton/*.yml
 /krypton/*.jsonc
 /krypton/.github/
+.npmrc

@@ -1,15 +1,19 @@
 {
-  "name": "@x8r/sapphire",
+  "name": "@x8rr/sapphire",
   "version": "0.1.0",
   "type": "module",
   "description": "Scramjet plugin that emulates the chrome.* extension APIs inside proxied frames",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/x8rr/sapphire"
+  },
   "files": [
     "src"
   ],
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.worker.json"

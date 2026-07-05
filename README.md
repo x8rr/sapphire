@@ -35,7 +35,7 @@ library, the host app builds whatever extension-manager UI it wants on top.
 ## Usage
 
 ```ts
-import { Sapphire, SapphireContentScriptPlugin } from "@x8r/sapphire";
+import { Sapphire, SapphireContentScriptPlugin } from "@x8rr/sapphire";
 
 const sapphire = new Sapphire({
   host: {
