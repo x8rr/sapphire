@@ -1,0 +1,27 @@
+(async () => {
+  const r = {};
+  r.readyState = document.readyState;
+  r.cssApplied = getComputedStyle(document.getElementById("heading") || document.body).color;
+  r.ping = await chrome.runtime.sendMessage({ type: "ping" });
+  r.async = await chrome.runtime.sendMessage({ type: "async", value: 21 });
+  r.promise = await chrome.runtime.sendMessage({ type: "promise" });
+  await new Promise((res) => chrome.runtime.sendMessage({ type: "noreply" }, (resp) => { r.noreplyErr = chrome.runtime.lastError && chrome.runtime.lastError.message; r.noreplyResp = resp; res(); }));
+  await chrome.storage.local.set({ k1: { a: 1, d: new Date(0) } });
+  r.storage = await chrome.storage.local.get("k1");
+  r.storageCb = await new Promise((res) => chrome.storage.local.get(["k1", "missing"], res));
+  r.war = await fetch(chrome.runtime.getURL("war.txt")).then((x) => x.text());
+  r.exec = await chrome.runtime.sendMessage({ type: "execScript" });
+  const port = chrome.runtime.connect({ name: "p1" });
+  r.port = await new Promise((res) => { port.onMessage.addListener((m) => res(m)); port.postMessage({ hi: 1 }); });
+  const img = new Image();
+  img.src = chrome.runtime.getURL("img.svg");
+  r.img = await new Promise((res) => { img.onload = () => res(img.naturalWidth); img.onerror = () => res("error"); });
+  r.blockedFetch = await fetch("/blocked.txt").then((x) => "status:" + x.status, (e) => "error:" + e.message);
+  r.okFetch = await fetch("/index.html").then((x) => "status:" + x.status, (e) => "error:" + e.message);
+  const frame = document.createElement("iframe");
+  const got = new Promise((res) => { window.addEventListener("message", (e) => { if (e.data && e.data.fromExtFrame) res(e.data); }); setTimeout(() => res("timeout"), 8000); });
+  frame.src = chrome.runtime.getURL("frame.html");
+  document.body.appendChild(frame);
+  r.frameMsg = await got;
+  window.__csIdle = r;
+})().catch((e) => { window.__csIdle = { error: String((e && e.stack) || e) }; });

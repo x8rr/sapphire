@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Sapphire dev</title>
+    <style>
+      :root { --bg:#14161a; --bg2:#1d2025; --bg3:#272b32; --fg:#e6e8eb; --mut:#8b93a1; --acc:#5b9dff; --bad:#ff6b6b; --ok:#4cc38a; }
+      * { box-sizing: border-box; }
+      html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font:13px system-ui, sans-serif; }
+      #app { display:grid; grid-template-rows:auto auto 1fr; height:100%; }
+      #tabstrip { display:flex; gap:2px; padding:6px 6px 0; background:var(--bg); overflow-x:auto; }
+      .tab { display:flex; align-items:center; gap:6px; max-width:200px; min-width:90px; padding:6px 8px; background:var(--bg2); border-radius:8px 8px 0 0; cursor:pointer; color:var(--mut); }
+      .tab.active { background:var(--bg3); color:var(--fg); }
+      .tab span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+      .tab button { all:unset; cursor:pointer; padding:0 4px; border-radius:4px; }
+      .tab button:hover { background:#fff2; }
+      #newtab { all:unset; cursor:pointer; padding:4px 10px; color:var(--mut); }
+      #toolbar { display:flex; align-items:center; gap:6px; padding:6px; background:var(--bg3); position:relative; }
+      #toolbar button, #toolbar .iconbtn { all:unset; cursor:pointer; padding:5px 9px; border-radius:6px; background:var(--bg2); color:var(--fg); }
+      #toolbar button:hover { background:#3a3f48; }
+      #url { flex:1; background:var(--bg); color:var(--fg); border:1px solid #3a3f48; border-radius:16px; padding:6px 12px; outline:none; }
+      #url:focus { border-color:var(--acc); }
+      #exticons { display:flex; gap:4px; }
+      .exticon { position:relative; width:30px; height:30px; padding:3px !important; display:grid; place-items:center; }
+      .exticon img { width:22px; height:22px; object-fit:contain; }
+      .exticon.disabled { opacity:.35; }
+      .badge { position:absolute; right:-2px; bottom:-2px; font-size:9px; padding:0 3px; border-radius:6px; color:#fff; background:#4285f4; }
+      #main { display:grid; grid-template-columns:1fr auto; min-height:0; }
+      #content { position:relative; min-height:0; background:#fff; }
+      #tabs iframe { position:absolute; inset:0; width:100%; height:100%; border:0; background:#fff; display:none; }
+      #tabs iframe.active { display:block; }
+      #side { width:380px; background:var(--bg2); border-left:1px solid #000; display:none; flex-direction:column; min-height:0; }
+      #side.open { display:flex; }
+      #side h3 { margin:0; padding:10px 12px; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--mut); }
+      #install { padding:0 12px 10px; display:flex; flex-direction:column; gap:6px; }
+      #install .row { display:flex; gap:6px; }
+      #install input[type=text] { flex:1; background:var(--bg); color:var(--fg); border:1px solid #3a3f48; border-radius:6px; padding:6px 8px; }
+      #install button, .xbtn { all:unset; cursor:pointer; padding:5px 10px; border-radius:6px; background:var(--acc); color:#000; font-weight:600; }
+      .xbtn.sec { background:var(--bg3); color:var(--fg); font-weight:400; }
+      .xbtn.bad { background:#4a2a2a; color:var(--bad); font-weight:400; }
+      #msg { padding:0 12px; min-height:16px; font-size:12px; color:var(--mut); }
+      #msg.err { color:var(--bad); }
+      #list { overflow:auto; padding:0 8px; flex:1; min-height:80px; }
+      .ext { display:flex; gap:10px; padding:8px; border-radius:8px; background:var(--bg3); margin-bottom:6px; }
+      .ext img { width:36px; height:36px; object-fit:contain; }
+      .ext .meta { flex:1; min-width:0; }
+      .ext .name { font-weight:600; }
+      .ext .sub { color:var(--mut); font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .ext .acts { display:flex; gap:4px; margin-top:6px; flex-wrap:wrap; }
+      #logwrap { border-top:1px solid #000; height:34%; display:flex; flex-direction:column; min-height:60px; }
+      #logbar { display:flex; justify-content:space-between; align-items:center; padding-right:8px; }
+      #log { flex:1; overflow:auto; margin:0; padding:6px 12px; font:11px/1.45 ui-monospace, monospace; white-space:pre-wrap; word-break:break-all; }
+      #log .warn { color:#e6b450; } #log .error { color:var(--bad); }
+      #popupwrap { position:absolute; top:100%; right:6px; z-index:50; background:#fff; border-radius:8px; box-shadow:0 8px 30px #000a; display:none; overflow:hidden; border:1px solid #000; }
+      #popupwrap.open { display:block; }
+      #popup { width:380px; height:520px; border:0; background:#fff; display:block; }
+      #ctxmenu { position:fixed; z-index:100; background:var(--bg2); border:1px solid #000; border-radius:8px; padding:4px; min-width:180px; box-shadow:0 8px 30px #000a; display:none; }
+      #ctxmenu div { padding:5px 10px; border-radius:4px; cursor:pointer; white-space:nowrap; }
+      #ctxmenu div:hover { background:var(--acc); color:#000; }
+      #ctxmenu .head { color:var(--mut); font-size:11px; cursor:default; }
+      #ctxmenu .head:hover { background:none; color:var(--mut); }
+      #toasts { position:fixed; right:12px; bottom:12px; display:flex; flex-direction:column; gap:6px; z-index:200; }
+      .toast { background:var(--bg2); border:1px solid #000; border-left:3px solid var(--acc); border-radius:6px; padding:8px 12px; max-width:320px; cursor:pointer; }
+      #status { position:fixed; left:8px; bottom:4px; font-size:10px; color:var(--mut); pointer-events:none; }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="tabstrip"></div>
+      <div id="toolbar">
+        <button id="back" title="Back">←</button>
+        <button id="fwd" title="Forward">→</button>
+        <button id="reload" title="Reload">⟳</button>
+        <input id="url" placeholder="Enter a URL (https://…) or chrome-extension://<id>/page.html" spellcheck="false" />
+        <div id="exticons"></div>
+        <button id="extbtn" title="Manage extensions">🧩</button>
+        <div id="popupwrap"><iframe id="popup"></iframe></div>
+      </div>
+      <div id="main">
+        <div id="content"><div id="tabs"></div></div>
+        <div id="side">
+          <h3>Install</h3>
+          <div id="install">
+            <div class="row"><input type="file" id="file" accept=".crx,.zip" /></div>
+            <div class="row"><input type="text" id="storeid" placeholder="Web Store ID or URL to a .crx/.zip" /><button id="installbtn">Install</button></div>
+          </div>
+          <div id="msg"></div>
+          <h3>Installed</h3>
+          <div id="list"></div>
+          <div id="logwrap"><div id="logbar"><h3>Log</h3><button class="xbtn sec" id="clearlog">clear</button></div><pre id="log"></pre></div>
+        </div>
+      </div>
+    </div>
+    <div id="ctxmenu"></div>
+    <div id="toasts"></div>
+    <div id="status">booting</div>
+    <script src="/scramjet/scramjet.js"></script>
+    <script src="/controller/controller.api.js"></script>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

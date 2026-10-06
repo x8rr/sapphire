@@ -1,0 +1,8 @@
+{
+  "manifest_version": 3,
+  "name": "Sapphire Vencord-style Loader Test",
+  "version": "1.0.0",
+  "background": { "service_worker": "sw.js" },
+  "permissions": ["scripting", "tabs"],
+  "host_permissions": ["<all_urls>"]
+}

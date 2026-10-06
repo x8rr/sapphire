@@ -1,0 +1,5 @@
+{
+  "desc": { "message": "Test extension" },
+  "title": { "message": "Sapphire Test Action" },
+  "greet": { "message": "Hello $NAME$!", "placeholders": { "name": { "content": "$1" } } }
+}

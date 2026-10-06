@@ -18,13 +18,29 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.worker.json"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.worker.json",
+    "test": "node test/run.mjs",
+    "test:realworld": "node test/realworld.mjs",
+    "dev": "node test/harness/server.mjs"
   },
   "dependencies": {
-    "@mercuryworkshop/scramjet": "^2.0.67-alpha.1",
     "jszip": "^3.10.1"
   },
   "peerDependencies": {
     "@mercuryworkshop/scramjet-controller": "^0.0.13"
+  },
+  "devDependencies": {
+    "@mercuryworkshop/libcurl-transport": "^2.0.5",
+    "@mercuryworkshop/scramjet": "^2.0.67-alpha.2",
+    "@mercuryworkshop/scramjet-controller": "^0.0.14",
+    "@mercuryworkshop/wisp-js": "^0.5.0",
+    "esbuild": "^0.28.2",
+    "playwright-core": "^1.61.1",
+    "typescript": "^7.0.2",
+    "vite": "^6.4.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true
   }
 }

@@ -1,0 +1,21 @@
+{
+  // comments are allowed in Chrome manifests
+  "manifest_version": 3,
+  "name": "Sapphire MV3 Test",
+  "version": "1.0.0",
+  "description": "__MSG_desc__",
+  "default_locale": "en",
+  "background": { "service_worker": "sw.js" },
+  "permissions": ["storage", "tabs", "scripting", "alarms", "contextMenus", "notifications", "declarativeNetRequest", "webNavigation", "offscreen", "cookies"],
+  "host_permissions": ["<all_urls>"],
+  "action": { "default_popup": "popup.html", "default_title": "__MSG_title__" },
+  "content_scripts": [
+    { "matches": ["<all_urls>"], "js": ["lib.js", "cs_start.js"], "run_at": "document_start" },
+    { "matches": ["<all_urls>"], "js": ["cs_idle.js"], "css": ["cs.css"], "run_at": "document_idle" },
+    { "matches": ["http://127.0.0.1/*"], "js": ["main_world.js"], "world": "MAIN", "run_at": "document_start" },
+    { "matches": ["http://127.0.0.1/child.html"], "js": ["cs_child.js"], "all_frames": true }
+  ],
+  "web_accessible_resources": [{ "resources": ["war.txt", "frame.html", "frame.js", "img.svg"], "matches": ["<all_urls>"] }],
+  "declarative_net_request": { "rule_resources": [{ "id": "rules1", "enabled": true, "path": "rules.json" }] },
+  "commands": { "do-thing": { "suggested_key": { "default": "Ctrl+Shift+Y" }, "description": "Do thing" } },
+}

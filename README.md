@@ -32,6 +32,28 @@ library, the host app builds whatever extension-manager UI it wants on top.
   Scramjet's fetch path (that hook is undocumented/unstable — see project notes), so wire
   it into your own request routing if you want extension-driven blocking.
 
+## How it works (v0.2)
+
+- Extension pages, popups, backgrounds and `chrome.runtime.getURL()` resources live on a
+  per-extension https alias origin (`https://<id>.sapphire-extension.invalid/`) and load
+  *through Scramjet*; the plugin's fetch hook serves them from IndexedDB. Pass the
+  controller via `new Sapphire({ host, controller })` or `attachController()`.
+- Content scripts run in the page's JS world (rewritten by Scramjet like page script) with a
+  per-extension `chrome` resolved from the caller's `sourceURL`, so page scripts never see it.
+- MV3 service workers run in hidden frames with `importScripts`/`clients`/`registration` shims.
+- `declarativeNetRequest` and `webRequest` (incl. blocking) are wired into Scramjet's fetch hooks.
+- Dev UI: `npm run dev`, then open http://localhost:5199/ — a small browser (tabs, URL bar, extension toolbar + popups, install from file / Web Store ID / URL, extension manager, log).
+- Tests: `npm test` (real Chrome + Scramjet + local wisp) and `npm run test:realworld`.
+
+### Migrating a host (e.g. cherri-v3)
+
+1. Pass the Scramjet controller: `new Sapphire({ host, controller })`, or `sapphire.attachController(controller)` once it boots.
+2. Add `plugins: [sapphire.createPlugin(tabId)]` to every `controller.createFrame(...)` (the old `SapphireContentScriptPlugin` still works).
+3. Drop `sapphire-sw-router.js` from the service worker — extension files are now served by Sapphire's Scramjet fetch hook.
+4. Load extension pages by URL: `frame.go(sapphire.resolveUrl("chrome-extension://<id>/page.html"))` (show `sapphire.displayUrl(url)` in the address bar).
+5. If your host boots the proxy lazily, implement `ensureController` (start the proxy, then `attachController`); Sapphire calls it when an extension is installed or a popup/page needs it.
+6. Optional host bindings: `createTab`, `closeTab`, `openPopup`, `showContextMenu`, `createNotification`, `openSidePanel`, `requestPermissions`.
+
 ## Usage
 
 ```ts

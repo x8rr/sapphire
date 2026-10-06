@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>Ad Test Page</title></head>
+  <body>
+    <h1>page with third-party ad/tracker requests</h1>
+    <script>
+      window.__adProbe = (async () => {
+        const probe = async (url) => {
+          try {
+            const r = await fetch(url).catch((e) => ({ __err: String(e.message || e) }));
+            if (r.__err) return `error:${r.__err}`;
+            const neutered = r.status >= 400 || new URL(r.url).hostname !== new URL(url).hostname;
+            return `status:${r.status}${neutered ? ":neutered" : ""}`;
+          } catch (e) {
+            return `error:${e.message}`;
+          }
+        };
+        return {
+          doubleclick: await probe("https://doubleclick.net/ad.js"),
+          googleAnalytics: await probe("https://www.google-analytics.com/analytics.js"),
+          ownPage: await probe(`${location.origin}/index.html`),
+        };
+      })();
+    </script>
+  </body>
+</html>
