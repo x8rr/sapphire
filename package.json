@@ -1,6 +1,6 @@
 {
   "name": "@x8r/sapphire",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "type": "module",
   "description": "Scramjet plugin that emulates the chrome.* extension APIs inside proxied frames",
   "main": "src/index.ts",
